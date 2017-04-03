@@ -3,13 +3,24 @@
 #include <Adafruit_BNO055.h>
 #include <utility/imumaths.h>
 #include "Adafruit_VL6180X.h"
-
-Adafruit_VL6180X vl = Adafruit_VL6180X();
+#include "HX711.h"
 
 #define BNO055_SAMPLERATE_DELAY_MS (100)
 
-Adafruit_BNO055 bno = Adafruit_BNO055(55);
+#define torque_dout A0
+#define torque_clk A1
+#define torque_factor 29480
 
+#define thrust_dout A2
+#define thrust_clk A3
+#define thrust_factor 45480
+
+Adafruit_VL6180X vl = Adafruit_VL6180X();
+Adafruit_BNO055 bno = Adafruit_BNO055(55);
+HX711 torque(torque_dout, torque_clk);
+HX711 thrust(thrust_dout, thrust_clk);  
+
+float torqueVal, thrustVal;
 
 void setup(void)
 {
@@ -23,12 +34,17 @@ void setup(void)
 
   delay(1000);
   bno.setExtCrystalUse(true);
+
+  torque.set_scale(torque_factor);
+  torque.tare();  
+  thrust.set_scale(thrust_factor);
+  thrust.tare();
 }
 
 void loop(void)
 {
   uint8_t range = vl.readRange();
-  uint8_t status = vl.readRangeStatus();
+  //uint8_t status = vl.readRangeStatus();
 
   Serial.print("Range: "); Serial.println(range);
   
@@ -42,10 +58,14 @@ void loop(void)
   Serial.print("\tY: ");
   Serial.print(event.orientation.y, 4);
   Serial.print("\tZ: ");
-  Serial.print(event.orientation.z, 4);
+  Serial.println(event.orientation.z, 4);
 
-  /* New line for the next sample */
-  Serial.println("");
+  torqueVal = torque.get_units();
+  thrustVal = thrust.get_units();
+  Serial.print("Torque: ");
+  Serial.println(torqueVal);
+  Serial.print("Thrust: ");
+  Serial.println(thrustVal);
 
   /* Wait the specified delay before requesting nex data */
   delay(BNO055_SAMPLERATE_DELAY_MS);
