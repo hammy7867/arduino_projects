@@ -125,8 +125,8 @@ void loop(void)
   String data = t + ";" + x + " " + y + " " + z + " " + torqueVal + " " + thrustVal + " " + range + " ";
   //String data = " x: " + x + " y: " + y + " z: " + z + " torque: " + torqueVal + " thrust: " + thrustVal + " range: " + range;
 
-/*  ble.print("AT+BLEUARTTX=");
-  ble.println(data);*/
+  ble.print("AT+BLEUARTTX=");
+  ble.println(data);
   
   /* Wait the specified delay before requesting nex data */
   delay(BNO055_SAMPLERATE_DELAY_MS);
