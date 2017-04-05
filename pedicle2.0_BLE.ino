@@ -10,7 +10,6 @@
 #include "Adafruit_BluefruitLE_SPI.h"
 #include "Adafruit_BluefruitLE_UART.h"
 #include "BluefruitConfig.h"
-#include "TimeLib.h"
 
 #if not defined (_VARIANT_ARDUINO_DUE_X_) && not defined (_VARIANT_ARDUINO_ZERO_)
   #include <SoftwareSerial.h>
@@ -123,17 +122,11 @@ void loop(void)
   thrustVal = String(thrust.get_units());
 
   //String data = x + ", " + y + ", " + z + ", " + torqueVal + ", " + thrustVal + ", " + range;
-  String data = t + " " + x + " " + y + " " + z + " " + torqueVal + " " + thrustVal + " " + range + " ";
+  String data = t + ";" + x + " " + y + " " + z + " " + torqueVal + " " + thrustVal + " " + range + " ";
   //String data = " x: " + x + " y: " + y + " z: " + z + " torque: " + torqueVal + " thrust: " + thrustVal + " range: " + range;
-  // Check for user input
-  //String orientation = x + " " + y + " " + z + " ";
-  //String penetration = " " + torqueVal + " " + thrustVal + " " + range;
-  /*ble.print("AT+BLEUARTTX=");
-  ble.println(orientation);
-  ble.print("AT+BLEUARTTX=");
-  ble.println(penetration);*/
-  ble.print("AT+BLEUARTTX=");
-  ble.println(data);
+
+/*  ble.print("AT+BLEUARTTX=");
+  ble.println(data);*/
   
   /* Wait the specified delay before requesting nex data */
   delay(BNO055_SAMPLERATE_DELAY_MS);
