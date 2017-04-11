@@ -10,6 +10,7 @@
 #include "Adafruit_BluefruitLE_SPI.h"
 #include "Adafruit_BluefruitLE_UART.h"
 #include "BluefruitConfig.h"
+#include "TimeLib.h"
 
 #if not defined (_VARIANT_ARDUINO_DUE_X_) && not defined (_VARIANT_ARDUINO_ZERO_)
   #include <SoftwareSerial.h>
@@ -41,7 +42,7 @@ void error(const __FlashStringHelper*err) {
   while (1);
 }
 
-String torqueVal, thrustVal, x, y, z, range;
+String t, torqueVal, thrustVal, x, y, z, range;
 
 void setup(void)
 {
@@ -107,9 +108,9 @@ void setup(void)
 
 void loop(void)
 {
-  String t = String(micros());
+  t = String(millis()/1000);
   range = String(vl.readRange());
-  
+
   /* Get a new sensor event */
   sensors_event_t event;
   bno.getEvent(&event);
@@ -121,9 +122,7 @@ void loop(void)
   torqueVal = String(torque.get_units());
   thrustVal = String(thrust.get_units());
 
-  //String data = x + ", " + y + ", " + z + ", " + torqueVal + ", " + thrustVal + ", " + range;
-  String data = t + ";" + x + " " + y + " " + z + " " + torqueVal + " " + thrustVal + " " + range + " ";
-  //String data = " x: " + x + " y: " + y + " z: " + z + " torque: " + torqueVal + " thrust: " + thrustVal + " range: " + range;
+  String data = t + ";" + x + " " + y + " " + z + " " + torqueVal + " " + thrustVal + " " + range;
 
   ble.print("AT+BLEUARTTX=");
   ble.println(data);
